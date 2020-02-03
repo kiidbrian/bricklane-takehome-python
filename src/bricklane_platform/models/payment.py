@@ -5,19 +5,28 @@ from dateutil.parser import parse
 from bricklane_platform.models.card import Card
 from bricklane_platform.config import PAYMENT_FEE_RATE
 
-
-class Payment(object):
-
+class BasePayment(object):
+    
     customer_id = None
     date = None
     amount = None
     fee = None
+
+    def __init__(self, data=None):
+        
+        if not data:
+            return
+
+    def is_successful(self):
+        raise NotImplementedError('Implementation for success state NOT IMPLEMENTED')
+
+class Payment(BasePayment):
+
     card_id = None
 
     def __init__(self, data=None):
 
-        if not data:
-            return
+        super(Payment, self).__init__(data)
 
         self.customer_id = int(data["customer_id"])
         self.date = parse(data["date"])
@@ -35,18 +44,13 @@ class Payment(object):
         return self.card.status == "processed"
 
 
-class BankPayment(Payment):
+class BankPayment(BasePayment):
 
-    customer_id = None
-    date = None
-    amount = None
-    fee = None
     bank_account_id = None
 
     def __init__(self, data=None):
 
-        if not data:
-            return
+        super(BankPayment, self).__init__(data)
 
         self.customer_id = int(data["customer_id"])
         self.date = parse(data["date"])
