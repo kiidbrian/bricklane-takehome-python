@@ -6,7 +6,13 @@ from bricklane_platform.models.payment import Payment
 
 
 def create_payment(customer_id, amount):
-    payment = Payment()
+    payment = Payment(data={
+        "amount": "2000",
+        "card_id": "45",
+        "card_status": "processed",
+        "customer_id": "123",
+        "date": "2019-02-01",
+    })
     payment.customer_id = customer_id
     payment.amount = amount
     return payment

@@ -7,7 +7,13 @@ from bricklane_platform.models.payment import Payment
 
 
 def create_stub_payment(mock_is_successful):
-    payment = Payment()
+    payment = Payment(data={
+        "amount": "2000",
+        "card_id": "45",
+        "card_status": "processed",
+        "customer_id": "123",
+        "date": "2019-02-01",
+    })
     payment.is_successful = lambda: mock_is_successful
     return payment
 

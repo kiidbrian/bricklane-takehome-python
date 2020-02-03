@@ -15,7 +15,14 @@ class BasePayment(object):
     def __init__(self, data=None):
         
         if not data:
-            return
+            raise ValueError('Provide data')
+
+        self.customer_id = int(data["customer_id"])
+        self.date = parse(data["date"])
+
+        total_amount = Decimal(data["amount"])
+        self.fee = total_amount * PAYMENT_FEE_RATE
+        self.amount = total_amount - self.fee
 
     def is_successful(self):
         raise NotImplementedError('Implementation for success state NOT IMPLEMENTED')
@@ -27,13 +34,6 @@ class Payment(BasePayment):
     def __init__(self, data=None):
 
         super(Payment, self).__init__(data)
-
-        self.customer_id = int(data["customer_id"])
-        self.date = parse(data["date"])
-
-        total_amount = Decimal(data["amount"])
-        self.fee = total_amount * PAYMENT_FEE_RATE
-        self.amount = total_amount - self.fee
 
         card = Card()
         card.card_id = int(data["card_id"])
@@ -51,15 +51,8 @@ class BankPayment(BasePayment):
     def __init__(self, data=None):
 
         super(BankPayment, self).__init__(data)
-
-        self.customer_id = int(data["customer_id"])
-        self.date = parse(data["date"])
-
-        total_amount = Decimal(data["amount"])
-        self.fee = total_amount * PAYMENT_FEE_RATE
-        self.amount = total_amount - self.fee
         
-        self.bank_account_id = data["bank_account_id"]
+        self.bank_account_id = int(data["bank_account_id"])
 
     def is_successful(self):
         return True

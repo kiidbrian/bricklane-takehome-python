@@ -7,18 +7,8 @@ from bricklane_platform.models.card import Card
 
 class TestPayment(unittest.TestCase):
 
-    def test_init(self):
-        payment = Payment()
-
-        self.assertIsNone(payment.customer_id)
-        self.assertIsNone(payment.date)
-        self.assertIsNone(payment.amount)
-        self.assertIsNone(payment.fee)
-        self.assertIsNone(payment.card_id)
-
-    def test_init_with_data(self):
-
-        data = {
+    def setUp(self):
+        self.data = {
             "amount": "2000",
             "card_id": "45",
             "card_status": "processed",
@@ -26,7 +16,13 @@ class TestPayment(unittest.TestCase):
             "date": "2019-02-01",
         }
 
-        payment = Payment(data)
+    def test_init(self):
+        with self.assertRaises(ValueError):
+            payment = Payment()
+
+    def test_init_with_data(self):
+
+        payment = Payment(self.data)
 
         self.assertEqual(payment.customer_id, 123)
         self.assertEqual(payment.date, datetime(2019, 2, 1))
@@ -40,54 +36,48 @@ class TestPayment(unittest.TestCase):
         self.assertEqual(card.status, "processed")
 
     def test_is_successful(self):
-        card = Card()
-        card.status = "processed"
-        payment = Payment()
-        payment.card = card
+        self.data["card_status"] = "processed"
+        payment = Payment(self.data)
 
         self.assertTrue(payment.is_successful())
 
     def test_is_successful_declined(self):
-        card = Card()
-        card.status = "declined"
-        payment = Payment()
-        payment.card = card
+        self.data["card_status"] = "declined"
+        payment = Payment(self.data)
 
         self.assertFalse(payment.is_successful())
 
     def test_is_successful_errored(self):
-        card = Card()
-        card.status = "errored"
-        payment = Payment()
-        payment.card = card
+        self.data["card_status"] = "error"
+        payment = Payment(self.data)
 
         self.assertFalse(payment.is_successful())
 
 
 class TestBankPayment(unittest.TestCase):
 
-    def test_init(self):
-        payment = BankPayment()
-
-        self.assertIsNone(payment.customer_id)
-        self.assertIsNone(payment.date)
-        self.assertIsNone(payment.amount)
-        self.assertIsNone(payment.fee)
-        self.assertIsNone(payment.bank_account_id)
-
-    def test_init_with_data(self):
-
-        data = {
+    def setUp(self):
+        self.data = {
             "amount": "2000",
             "bank_account_id": "45",
             "customer_id": "123",
             "date": "2019-02-01",
         }
 
-        payment = BankPayment(data)
+    def test_init(self):
+        with self.assertRaises(ValueError):
+            payment = Payment()
+
+    def test_init_with_data(self):
+        payment = BankPayment(self.data)
 
         self.assertEqual(payment.customer_id, 123)
         self.assertEqual(payment.date, datetime(2019, 2, 1))
         self.assertEqual(payment.amount, 1960)
         self.assertEqual(payment.fee, 40)
         self.assertEqual(payment.bank_account_id, 45)
+
+    def test_is_successful_always_return_true(self):
+        payment = BankPayment(self.data)
+
+        self.assertTrue(payment.is_successful())
