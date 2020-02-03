@@ -2,7 +2,14 @@ import csv
 
 from bricklane_platform.models.payment import BankPayment, Payment
 
+class BaseProcessor(object):
+    def get_payments(self, csv_path, source):
+        pass
 
+    def verify_payments(self):
+        pass
+
+    
 class PaymentProcessor(object):
 
     def get_payments(self, csv_path, source):
