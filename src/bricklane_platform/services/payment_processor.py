@@ -1,6 +1,6 @@
 import csv
 
-from bricklane_platform.models.payment import Payment
+from bricklane_platform.models.payment import BankPayment, Payment
 
 
 class PaymentProcessor(object):
@@ -21,3 +21,17 @@ class PaymentProcessor(object):
                 successful_payments.append(payment)
 
         return successful_payments
+
+class BankTranferProcessor(PaymentProcessor):
+
+    def get_payments(self, csv_path, source):
+        payments = []
+        with open(csv_path) as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                payments.append(BankPayment(row))
+
+        return payments
+
+    def verify_payments(self, payments):
+        return payments
