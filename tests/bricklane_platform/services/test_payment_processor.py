@@ -2,7 +2,7 @@ import unittest
 from ..fixture import get_path
 
 
-from bricklane_platform.services.payment_processor import BankTranferProcessor, PaymentProcessor
+from bricklane_platform.services.payment_processor import PaymentProcessor
 from bricklane_platform.models.payment import Payment
 
 
@@ -50,7 +50,7 @@ class TestPaymentProcessor(unittest.TestCase):
 class TestBankTransferProcessor(unittest.TestCase):
 
     def setUp(self):
-        self.payment_processor = BankTranferProcessor()
+        self.payment_processor = PaymentProcessor()
 
     def test_get_payments(self):
         fixture = get_path("bank_payments_data.csv")
