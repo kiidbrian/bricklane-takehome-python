@@ -1,0 +1,4 @@
+customer_id,date,amount,card_id,card_status
+123,2019-01-12,900,30,processed
+123,2019-02-10,900,45,declined
+456,2019-01-20,4200,10,processed
